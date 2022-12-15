@@ -1,6 +1,6 @@
 import 'package:dot_navigation_bar/src/body.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:ui';
 import 'DotNavigationBarItem.dart';
 
 class DotNavigationBar extends StatelessWidget {
@@ -31,6 +31,7 @@ class DotNavigationBar extends StatelessWidget {
     this.enableFloatingNavBar = true,
     this.enablePaddingAnimation = true,
     this.splashColor,
+    this.filter,
   }) : super(key: key);
 
   /// A list of tabs to display, ie `Home`, `Profile`,`Cart`, etc
@@ -85,67 +86,77 @@ class DotNavigationBar extends StatelessWidget {
   /// To disable, use `Colors.transparent`
   final Color? splashColor;
 
+  final ImageFilter? filter;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return enableFloatingNavBar
         ? BottomAppBar(
-            color: Colors.transparent,
-            elevation: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: marginR!,
-                  child: Container(
-                    padding: paddingR,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(borderRadius!),
-                      color: backgroundColor,
-                      boxShadow: boxShadow,
-                    ),
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Body(
-                          items: items,
-                          currentIndex: currentIndex,
-                          curve: curve,
-                          duration: duration,
-                          selectedItemColor: selectedItemColor,
-                          theme: theme,
-                          unselectedItemColor: unselectedItemColor,
-                          onTap: onTap!,
-                          itemPadding: itemPadding,
-                          dotIndicatorColor: dotIndicatorColor,
-                          enablePaddingAnimation: enablePaddingAnimation,
-                          splashColor: splashColor),
+      color: Colors.transparent,
+      elevation: 0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: marginR!,
+            child: Container(
+              padding: paddingR,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius!),
+                color: backgroundColor,
+                boxShadow: boxShadow,
+              ),
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius!),
+                child: BackdropFilter(
+                  filter: filter == null ? ImageFilter.blur(sigmaX: 0, sigmaY: 0,) : filter!,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Body(
+                      items: items,
+                      currentIndex: currentIndex,
+                      curve: curve,
+                      duration: duration,
+                      selectedItemColor: selectedItemColor,
+                      theme: theme,
+                      unselectedItemColor: unselectedItemColor,
+                      onTap: onTap!,
+                      itemPadding: itemPadding,
+                      dotIndicatorColor: dotIndicatorColor,
+                      enablePaddingAnimation: enablePaddingAnimation,
+                      splashColor: splashColor,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          )
+          ),
+        ],
+      ),
+    )
         : Container(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            color: backgroundColor,
-            child: Padding(
-              padding: margin,
-              child: Body(
-                  items: items,
-                  currentIndex: currentIndex,
-                  curve: curve,
-                  duration: duration,
-                  selectedItemColor: selectedItemColor,
-                  theme: theme,
-                  unselectedItemColor: unselectedItemColor,
-                  onTap: onTap!,
-                  itemPadding: itemPadding,
-                  dotIndicatorColor: dotIndicatorColor,
-                  enablePaddingAnimation: enablePaddingAnimation,
-                  splashColor: splashColor),
-            ),
-          );
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      color: backgroundColor,
+      child: Padding(
+        padding: margin,
+        child: Body(
+          items: items,
+          currentIndex: currentIndex,
+          curve: curve,
+          duration: duration,
+          selectedItemColor: selectedItemColor,
+          theme: theme,
+          unselectedItemColor: unselectedItemColor,
+          onTap: onTap!,
+          itemPadding: itemPadding,
+          dotIndicatorColor: dotIndicatorColor,
+          enablePaddingAnimation: enablePaddingAnimation,
+          splashColor: splashColor,
+        ),
+      ),
+    );
   }
 }
